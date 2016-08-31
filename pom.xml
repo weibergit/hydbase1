@@ -9,7 +9,7 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
-	<!-- <groupId>yycg</groupId> -->
+	<!-- <groupId>hyd</groupId> -->
 	<artifactId>base</artifactId>
 	<packaging>war</packaging>
 	<!-- <version>0.0.1-SNAPSHOT</version> -->
