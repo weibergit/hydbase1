@@ -15,8 +15,5 @@
 
 <!-- 用户管理 -->
 <bean id="userService" class="hyd.base.service.impl.UserServiceImpl"/>
-<!-- 系统配置 -->
-<bean id="systemConfigService" class="hyd.base.service.impl.SystemConfigServiceImpl"/>
-<!-- dwrService -->
-<bean id="dwrService" class="hyd.base.service.impl.DwrServiceImpl"/>
+
 </beans>

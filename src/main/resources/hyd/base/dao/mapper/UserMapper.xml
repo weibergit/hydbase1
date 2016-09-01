@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="hyd.base.dao.mapper.OrgUserRoleMapper" >
-  <resultMap id="BaseResultMap" type="hyd.base.pojo.po.OrgUserRole" >
-    <id column="ID" property="id" jdbcType="VARCHAR" />
-    <result column="USERID" property="userid" jdbcType="VARCHAR" />
-    <result column="ROLEID" property="roleid" jdbcType="VARCHAR" />
+<mapper namespace="hyd.base.dao.mapper.UserMapper" >
+  <resultMap id="BaseResultMap" type="hyd.base.pojo.po.User" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="age" property="age" jdbcType="INTEGER" />
+    <result column="maile" property="maile" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Example_Where_Clause" >
     <where >
@@ -65,15 +66,15 @@
     </where>
   </sql>
   <sql id="Base_Column_List" >
-    ID, USERID, ROLEID
+    id, name, age, maile
   </sql>
-  <select id="selectByExample" resultMap="BaseResultMap" parameterType="hyd.base.pojo.po.OrgUserRoleExample" >
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="hyd.base.pojo.po.UserExample" >
     select
     <if test="distinct" >
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from org_user_role
+    from user
     <if test="_parameter != null" >
       <include refid="Example_Where_Clause" />
     </if>
@@ -81,70 +82,79 @@
       order by ${orderByClause}
     </if>
   </select>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
-    from org_user_role
-    where ID = #{id,jdbcType=VARCHAR}
+    from user
+    where id = #{id,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
-    delete from org_user_role
-    where ID = #{id,jdbcType=VARCHAR}
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from user
+    where id = #{id,jdbcType=INTEGER}
   </delete>
-  <delete id="deleteByExample" parameterType="hyd.base.pojo.po.OrgUserRoleExample" >
-    delete from org_user_role
+  <delete id="deleteByExample" parameterType="hyd.base.pojo.po.UserExample" >
+    delete from user
     <if test="_parameter != null" >
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="hyd.base.pojo.po.OrgUserRole" >
-    insert into org_user_role (ID, USERID, ROLEID
-      )
-    values (#{id,jdbcType=VARCHAR}, #{userid,jdbcType=VARCHAR}, #{roleid,jdbcType=VARCHAR}
-      )
+  <insert id="insert" parameterType="hyd.base.pojo.po.User" >
+    insert into user (id, name, age, 
+      maile)
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{age,jdbcType=INTEGER}, 
+      #{maile,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="hyd.base.pojo.po.OrgUserRole" >
-    insert into org_user_role
+  <insert id="insertSelective" parameterType="hyd.base.pojo.po.User" >
+    insert into user
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
-        ID,
+        id,
       </if>
-      <if test="userid != null" >
-        USERID,
+      <if test="name != null" >
+        name,
       </if>
-      <if test="roleid != null" >
-        ROLEID,
+      <if test="age != null" >
+        age,
+      </if>
+      <if test="maile != null" >
+        maile,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
-        #{id,jdbcType=VARCHAR},
+        #{id,jdbcType=INTEGER},
       </if>
-      <if test="userid != null" >
-        #{userid,jdbcType=VARCHAR},
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
       </if>
-      <if test="roleid != null" >
-        #{roleid,jdbcType=VARCHAR},
+      <if test="age != null" >
+        #{age,jdbcType=INTEGER},
+      </if>
+      <if test="maile != null" >
+        #{maile,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="hyd.base.pojo.po.OrgUserRoleExample" resultType="java.lang.Integer" >
-    select count(*) from org_user_role
+  <select id="countByExample" parameterType="hyd.base.pojo.po.UserExample" resultType="java.lang.Integer" >
+    select count(*) from user
     <if test="_parameter != null" >
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map" >
-    update org_user_role
+    update user
     <set >
       <if test="record.id != null" >
-        ID = #{record.id,jdbcType=VARCHAR},
+        id = #{record.id,jdbcType=INTEGER},
       </if>
-      <if test="record.userid != null" >
-        USERID = #{record.userid,jdbcType=VARCHAR},
+      <if test="record.name != null" >
+        name = #{record.name,jdbcType=VARCHAR},
       </if>
-      <if test="record.roleid != null" >
-        ROLEID = #{record.roleid,jdbcType=VARCHAR},
+      <if test="record.age != null" >
+        age = #{record.age,jdbcType=INTEGER},
+      </if>
+      <if test="record.maile != null" >
+        maile = #{record.maile,jdbcType=VARCHAR},
       </if>
     </set>
     <if test="_parameter != null" >
@@ -152,30 +162,35 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map" >
-    update org_user_role
-    set ID = #{record.id,jdbcType=VARCHAR},
-      USERID = #{record.userid,jdbcType=VARCHAR},
-      ROLEID = #{record.roleid,jdbcType=VARCHAR}
+    update user
+    set id = #{record.id,jdbcType=INTEGER},
+      name = #{record.name,jdbcType=VARCHAR},
+      age = #{record.age,jdbcType=INTEGER},
+      maile = #{record.maile,jdbcType=VARCHAR}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="hyd.base.pojo.po.OrgUserRole" >
-    update org_user_role
+  <update id="updateByPrimaryKeySelective" parameterType="hyd.base.pojo.po.User" >
+    update user
     <set >
-      <if test="userid != null" >
-        USERID = #{userid,jdbcType=VARCHAR},
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
       </if>
-      <if test="roleid != null" >
-        ROLEID = #{roleid,jdbcType=VARCHAR},
+      <if test="age != null" >
+        age = #{age,jdbcType=INTEGER},
+      </if>
+      <if test="maile != null" >
+        maile = #{maile,jdbcType=VARCHAR},
       </if>
     </set>
-    where ID = #{id,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="hyd.base.pojo.po.OrgUserRole" >
-    update org_user_role
-    set USERID = #{userid,jdbcType=VARCHAR},
-      ROLEID = #{roleid,jdbcType=VARCHAR}
-    where ID = #{id,jdbcType=VARCHAR}
+  <update id="updateByPrimaryKey" parameterType="hyd.base.pojo.po.User" >
+    update user
+    set name = #{name,jdbcType=VARCHAR},
+      age = #{age,jdbcType=INTEGER},
+      maile = #{maile,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>
