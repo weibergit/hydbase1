@@ -375,44 +375,7 @@ public class UserServiceImpl implements UserService {
 		activeUser.setUserid(userid);
 		activeUser.setUsername(sysuser.getUsername());
 		activeUser.setGroupid(sysuser.getGroupid());
-		activeUser.setSysid(sysuser.getSysid());// 单位id（重要）
-		String sysmc = null;// 单位名称
-		// 根据sysid查询单位名称
-		String groupid = sysuser.getGroupid();
-		String sysid = sysuser.getSysid();// 单位id
-		if (groupid.equals("1") || groupid.equals("2")) {
-			// 监督单位
-			// 根据单位id查询单位信息
-			Userjd userjd = userjdMapper.selectByPrimaryKey(sysid);
-			if (userjd == null) {
-				// 抛出异常，可预知异常
-				ResultUtil.throwExcepion(ResultUtil.createFail(Config.MESSAGE,
-						217, null));
-			}
-			sysmc = userjd.getMc();
-		} else if (groupid.equals("3")) {
-			// 卫生室
-			// 根据单位id查询单位信息
-			Useryy useryy = useryyMapper.selectByPrimaryKey(sysid);
-			if (useryy == null) {
-				// 抛出异常，可预知异常
-				ResultUtil.throwExcepion(ResultUtil.createFail(Config.MESSAGE,
-						217, null));
-			}
-			sysmc = useryy.getMc();
-		} else if (groupid.equals("4")) {
-			// 供货商
-			// 根据单位id查询单位信息
-			Usergys usergys = usergysMapper.selectByPrimaryKey(sysid);
-			if (usergys == null) {
-				// 抛出异常，可预知异常
-				ResultUtil.throwExcepion(ResultUtil.createFail(Config.MESSAGE,
-						217, null));
-			}
-			sysmc = usergys.getMc();
-		}
-
-		activeUser.setSysmc(sysmc);// 单位名称
+		
 
 		return activeUser;
 	}

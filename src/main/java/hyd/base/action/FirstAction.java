@@ -15,6 +15,12 @@ public class FirstAction {
 		return "/base/first";
 	}
 	
+	//菜单数据
+	@RequestMapping("/first")
+	public String getmenu(Model model)throws Exception{
+		return "/base/first";
+	}
+	
 	//欢迎页面
 	@RequestMapping("/welcome")
 	public String welcome(){
