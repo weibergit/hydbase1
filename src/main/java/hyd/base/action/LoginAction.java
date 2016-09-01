@@ -24,12 +24,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * <p>
  * Description: 用户认证
  * </p>
- * <p>
- * Company: www.itcast.com
- * </p>
- * 
- * @author 苗润土
- * @date 2014年11月29日上午9:12:05
+ * @author 王鹏
+ * @date 2016年09月01日上午9:12:05
  * @version 1.0
  */
 @Controller

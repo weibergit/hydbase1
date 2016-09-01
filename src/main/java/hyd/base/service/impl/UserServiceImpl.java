@@ -1,10 +1,14 @@
 package hyd.base.service.impl;
 
+import hyd.base.dao.mapper.OrgUserMapper;
+import hyd.base.dao.mapper.OrgUserMapperCustom;
 import hyd.base.dao.mapper.SysuserMapper;
 import hyd.base.dao.mapper.SysuserMapperCustom;
 import hyd.base.dao.mapper.UsergysMapper;
 import hyd.base.dao.mapper.UserjdMapper;
 import hyd.base.dao.mapper.UseryyMapper;
+import hyd.base.pojo.po.OrgUser;
+import hyd.base.pojo.po.OrgUserExample;
 import hyd.base.pojo.po.Sysuser;
 import hyd.base.pojo.po.SysuserExample;
 import hyd.base.pojo.po.Usergys;
@@ -14,6 +18,7 @@ import hyd.base.pojo.po.UserjdExample;
 import hyd.base.pojo.po.Useryy;
 import hyd.base.pojo.po.UseryyExample;
 import hyd.base.pojo.vo.ActiveUser;
+import hyd.base.pojo.vo.OrgUserCustom;
 import hyd.base.pojo.vo.SysuserCustom;
 import hyd.base.pojo.vo.SysuserQueryVo;
 import hyd.base.process.context.Config;
@@ -32,38 +37,30 @@ public class UserServiceImpl implements UserService {
 
 	// 注入 mapper
 	@Autowired
-	private SysuserMapper sysuserMapper;
+	private OrgUserMapper orgUserMapper;
+
 
 	@Autowired
-	private UserjdMapper userjdMapper;
-
-	@Autowired
-	private UseryyMapper useryyMapper;
-
-	@Autowired
-	private UsergysMapper usergysMapper;
-
-	@Autowired
-	private SysuserMapperCustom sysuserMapperCustom;
+	private OrgUserMapperCustom orgUserMapperCustom;
 
 	@Override
-	public List<SysuserCustom> findSysuserList(SysuserQueryVo sysuserQueryVo)
+	public List<OrgUserMapperCustom> findSysuserList(OrgUserQueryVo orgUserQueryVo)
 			throws Exception {
-		return sysuserMapperCustom.findSysuserList(sysuserQueryVo);
+		return orgUserMapperCustom.findSysuserList(orgUserQueryVo);
 	}
 
 	@Override
-	public int findSysuserCount(SysuserQueryVo sysuserQueryVo) throws Exception {
-		return sysuserMapperCustom.findSysuserCount(sysuserQueryVo);
+	public int findOrgUserCount(OrgUserQueryVo orgUserQueryVo) throws Exception {
+		return orgUserMapperCustom.findSysuserCount(orgUserQueryVo);
 	}
 
 	// 根据账号查询用户方法
-	public Sysuser findSysuserByUserid(String userId) throws Exception {
-		SysuserExample sysuserExample = new SysuserExample();
-		SysuserExample.Criteria criteria = sysuserExample.createCriteria();
+	public OrgUser findOrgUserByUserid(String userId) throws Exception {
+		OrgUserExample orgUserExample = new OrgUserExample();
+		OrgUserExample.Criteria criteria = orgUserExample.createCriteria();
 		// 设置查询条件，根据账号查询
 		criteria.andUseridEqualTo(userId);
-		List<Sysuser> list = sysuserMapper.selectByExample(sysuserExample);
+		List<OrgUser> list = orgUserMapper.selectByExample(orgUserExample);
 
 		if (list != null && list.size() == 1) {
 			return list.get(0);
@@ -71,51 +68,9 @@ public class UserServiceImpl implements UserService {
 		return null;
 	}
 
-	// 根据单位名称 查询单位信息
-	public Userjd findUserjdByMc(String mc) throws Exception {
-
-		UserjdExample userjdExample = new UserjdExample();
-		UserjdExample.Criteria criteria = userjdExample.createCriteria();
-		criteria.andMcEqualTo(mc);
-		List<Userjd> list = userjdMapper.selectByExample(userjdExample);
-
-		if (list != null && list.size() == 1) {
-			return list.get(0);
-		}
-		return null;
-
-	}
-
-	public Useryy findUseryyByMc(String mc) throws Exception {
-
-		UseryyExample useryyExample = new UseryyExample();
-		UseryyExample.Criteria criteria = useryyExample.createCriteria();
-		criteria.andMcEqualTo(mc);
-		List<Useryy> list = useryyMapper.selectByExample(useryyExample);
-
-		if (list != null && list.size() == 1) {
-			return list.get(0);
-		}
-		return null;
-
-	}
-
-	public Usergys findUsergysByMc(String mc) throws Exception {
-
-		UsergysExample usergysExample = new UsergysExample();
-		UsergysExample.Criteria criteria = usergysExample.createCriteria();
-		criteria.andMcEqualTo(mc);
-		List<Usergys> list = usergysMapper.selectByExample(usergysExample);
-
-		if (list != null && list.size() == 1) {
-			return list.get(0);
-		}
-		return null;
-
-	}
 
 	@Override
-	public void insertSysuser(SysuserCustom sysuserCustom) throws Exception {
+	public void insertOrgUser(OrgUserCustom orgUserCustom) throws Exception {
 
 		// 参数校验
 		// 通用的参数合法校验，非空校验，长度校验
@@ -124,8 +79,8 @@ public class UserServiceImpl implements UserService {
 		// 数据业务合法性校验
 		// 账号唯一性校验，查询数据库校验出来
 		// 思路：根据用户账号查询sysuser表，如果查询到说明 账号重复
-		Sysuser sysuser = this.findSysuserByUserid(sysuserCustom.getUserid());
-		if (sysuser != null) {
+		OrgUser user = this.findOrgUserByUserid(orgUserCustom.getUserid());
+		if (user != null) {
 			// 账号重复
 			// 抛出异常，可预知异常
 			// throw new Exception("账号重复");
@@ -146,45 +101,6 @@ public class UserServiceImpl implements UserService {
 					null));
 		}
 
-		// 根据用户类型，输入单位名称必须存在对应的单位表
-		String groupid = sysuserCustom.getGroupid();// 用户类型
-		String sysmc = sysuserCustom.getSysmc();// 单位名称
-		String sysid = null;// 单位id
-		if (groupid.equals("1") || groupid.equals("2")) {
-			// 监督单位
-			// 根据单位名称查询单位信息
-			Userjd userjd = this.findUserjdByMc(sysmc);
-			if (userjd == null) {
-				// 抛出异常，可预知异常
-				throw new Exception("单位名称输入错误");
-			}
-			sysid = userjd.getId();
-		} else if (groupid.equals("3")) {
-			// 卫生室
-			// 根据单位名称查询单位信息
-			Useryy useryy = this.findUseryyByMc(sysmc);
-			if (useryy == null) {
-				// 抛出异常，可预知异常
-				throw new Exception("单位名称输入错误");
-			}
-			sysid = useryy.getId();
-		} else if (groupid.equals("4")) {
-			// 供货商
-			// 根据单位名称查询单位信息
-			Usergys usergys = this.findUsergysByMc(sysmc);
-			if (usergys == null) {
-				// 抛出异常，可预知异常
-				throw new Exception("单位名称输入错误");
-			}
-			sysid = usergys.getId();
-		}
-		// 设置主键
-		sysuserCustom.setId(UUIDBuild.getUUID());
-		// 设置单位id
-		sysuserCustom.setSysid(sysid);
-		//对密码加密 
-		sysuserCustom.setPwd(new MD5().getMD5ofStr(sysuserCustom.getPwd()));
-		sysuserMapper.insert(sysuserCustom);
 
 	}
 
@@ -192,176 +108,87 @@ public class UserServiceImpl implements UserService {
 	public void deleteSysuser(String id) throws Exception {
 		// 校验约束
 		// 校验用户是否存在
-		Sysuser sysuser = sysuserMapper.selectByPrimaryKey(id);
-		if (sysuser == null) {
+		OrgUser user = orgUserMapper.selectByPrimaryKey(id);
+		if (user == null) {
 			// 用户不存在
 			ResultUtil.throwExcepion(ResultUtil.createFail(Config.MESSAGE, 212,
 					null));
 		}
 		// 执行删除
-		sysuserMapper.deleteByPrimaryKey(id);
+		orgUserMapper.deleteByPrimaryKey(id);
 
 	}
 
 	@Override
-	public void updateSysuser(String id, SysuserCustom sysuserCustom)
+	public void updateOrgUser(String id, OrgUserCustom orgUserCustom)
 			throws Exception {
 		// 非空校验。。。
 
 		// 修改用户账号不允许暂用别人的账号
 		// 如果判断账号修改了
 		// 页面提交的账号可能是用户修改的账号
-		String userid_page = sysuserCustom.getUserid();
+		String userid_page = orgUserCustom.getUserid();
 
 		// 数据库中的账号是用户原始账号
 		// 通过id查询数据库
-		Sysuser sysuser = sysuserMapper.selectByPrimaryKey(id);
-		if (sysuser == null) {
+		OrgUser user = orgUserMapper.selectByPrimaryKey(id);
+		if (user == null) {
 			// 抛出异常
 			// 找不到要修改用户信息
 			// .....
 		}
 		// 用户原始账号
-		String userid = sysuser.getUserid();
+		String userid = user.getUserid();
 
 		if (!userid_page.equals(userid)) {
 			// 通过页面提交的账号查询数据库，如果查到说明暂用别人的账号
-			Sysuser sysuser_1 = this.findSysuserByUserid(userid_page);
-			if (sysuser_1 != null) {
+			OrgUser user1 = this.findOrgUserByUserid(userid_page);
+			if (user1 != null) {
 				// 说明暂用别人的账号
 				ResultUtil.throwExcepion(ResultUtil.createFail(Config.MESSAGE,
 						213, null));
 			}
 		}
-
-		// 根据页面提交的单位名称查询单位id
-		String groupid = sysuserCustom.getGroupid();// 用户类型
-		String sysmc = sysuserCustom.getSysmc();// 页面输入的单位名称
-		String sysid = null;// 单位id
-		if (groupid.equals("1") || groupid.equals("2")) {
-			// 监督单位
-			// 根据单位名称查询单位信息
-			Userjd userjd = this.findUserjdByMc(sysmc);
-			if (userjd == null) {
-				// 抛出异常，可预知异常
-				ResultUtil.throwExcepion(ResultUtil.createFail(Config.MESSAGE,
-						217, null));
-			}
-			sysid = userjd.getId();
-		} else if (groupid.equals("3")) {
-			// 卫生室
-			// 根据单位名称查询单位信息
-			Useryy useryy = this.findUseryyByMc(sysmc);
-			if (useryy == null) {
-				// 抛出异常，可预知异常
-				ResultUtil.throwExcepion(ResultUtil.createFail(Config.MESSAGE,
-						217, null));
-			}
-			sysid = useryy.getId();
-		} else if (groupid.equals("4")) {
-			// 供货商
-			// 根据单位名称查询单位信息
-			Usergys usergys = this.findUsergysByMc(sysmc);
-			if (usergys == null) {
-				// 抛出异常，可预知异常
-				ResultUtil.throwExcepion(ResultUtil.createFail(Config.MESSAGE,
-						217, null));
-			}
-			sysid = usergys.getId();
-		}
-
-		// 密码修改
-		// 如果从页面提交的密码值为空说明用户不修改密码，否则 就需要对密码进行加密存储
-		String pwd_page = sysuserCustom.getPwd().trim();
-		String pwd_md5 = null;
-		if (pwd_page != null && !pwd_page.equals("")) {
-			// 说明用户修改密码了
-			pwd_md5 = new MD5().getMD5ofStr(pwd_page);
-		}
-
 		// 设置更新用户信息
 
 		// 调用mapper更新用户
 		// 使用updateByPrimaryKey更新，要先查询用户
 
-		Sysuser sysuser_update = sysuserMapper.selectByPrimaryKey(id);
+		OrgUser user_update = orgUserMapper.selectByPrimaryKey(id);
 
-		sysuser_update.setUserid(sysuserCustom.getUserid());
-		sysuser_update.setUsername(sysuserCustom.getUsername());
-		sysuser_update.setUserstate(sysuserCustom.getUserstate());
-		if (pwd_md5 != null) {
-			sysuser_update.setPwd(pwd_md5);
-		}
-		sysuser_update.setGroupid(sysuserCustom.getGroupid());
-		sysuser_update.setSysid(sysid);// 单位id
-		sysuserMapper.updateByPrimaryKey(sysuser_update);
+		user_update.setUserid(orgUserCustom.getUserid());
+		user_update.setUsername(orgUserCustom.getUsername());
+		user_update.setStatus(orgUserCustom.getStatus());
+		orgUserMapper.updateByPrimaryKey(user_update);
 
 	}
 
 	@Override
-	public SysuserCustom findSysuserById(String id) throws Exception {
+	public OrgUserCustom findSysuserById(String id) throws Exception {
 
 		// 从数据库查询用户
-		Sysuser sysuser = sysuserMapper.selectByPrimaryKey(id);
+		OrgUser user = orgUserMapper.selectByPrimaryKey(id);
 
-		// 根据sysid查询单位名称
-		String groupid = sysuser.getGroupid();
-		String sysid = sysuser.getSysid();// 单位id
-		String sysmc = null;
-		if (groupid.equals("1") || groupid.equals("2")) {
-			// 监督单位
-			// 根据单位id查询单位信息
-			Userjd userjd = userjdMapper.selectByPrimaryKey(sysid);
-			if (userjd == null) {
-				// 抛出异常，可预知异常
-				ResultUtil.throwExcepion(ResultUtil.createFail(Config.MESSAGE,
-						217, null));
-			}
-			sysmc = userjd.getMc();
-		} else if (groupid.equals("3")) {
-			// 卫生室
-			// 根据单位id查询单位信息
-			Useryy useryy = useryyMapper.selectByPrimaryKey(sysid);
-			if (useryy == null) {
-				// 抛出异常，可预知异常
-				ResultUtil.throwExcepion(ResultUtil.createFail(Config.MESSAGE,
-						217, null));
-			}
-			sysmc = useryy.getMc();
-		} else if (groupid.equals("4")) {
-			// 供货商
-			// 根据单位id查询单位信息
-			Usergys usergys = usergysMapper.selectByPrimaryKey(sysid);
-			if (usergys == null) {
-				// 抛出异常，可预知异常
-				ResultUtil.throwExcepion(ResultUtil.createFail(Config.MESSAGE,
-						217, null));
-			}
-			sysmc = usergys.getMc();
-		}
-
-		SysuserCustom sysuserCustom = new SysuserCustom();
+		OrgUserCustom orgUserCustom = new OrgUserCustom();
 
 		// 将sysuser中数据设置到sysuserCustom
-		BeanUtils.copyProperties(sysuser, sysuserCustom);
+		BeanUtils.copyProperties(user, orgUserCustom);
 
-		sysuserCustom.setSysmc(sysmc);// 单位名称
-
-		return sysuserCustom;
+		return orgUserCustom;
 	}
 
 	@Override
 	public ActiveUser checkUserInfo(String userid, String pwd) throws Exception {
 		// 校验用户是否存在
-		Sysuser sysuser = this.findSysuserByUserid(userid);
-		if (sysuser == null) {
+		OrgUser user = this.findOrgUserByUserid(userid);
+		if (user == null) {
 			// 用户不存在
 			ResultUtil.throwExcepion(ResultUtil.createFail(Config.MESSAGE, 101,
 					null));
 		}
 
 		// 校验用户密码是否合法
-		String pwd_db = sysuser.getPwd();// md5密文
+		String pwd_db = user.getPassword();// md5密文
 		String pwd_md5 = new MD5().getMD5ofStr(pwd);
 
 		if (!pwd_db.equalsIgnoreCase(pwd_md5)) {
@@ -373,8 +200,7 @@ public class UserServiceImpl implements UserService {
 		// 构建用户身份信息
 		ActiveUser activeUser = new ActiveUser();
 		activeUser.setUserid(userid);
-		activeUser.setUsername(sysuser.getUsername());
-		activeUser.setGroupid(sysuser.getGroupid());
+		activeUser.setUsername(user.getUsername());
 		
 
 		return activeUser;
