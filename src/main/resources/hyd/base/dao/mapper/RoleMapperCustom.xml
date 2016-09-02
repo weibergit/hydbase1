@@ -1,0 +1,39 @@
+<!-- <?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="demo.ssm.dao.mapper.RoleMapperCustom" >
+  
+  <sql id="query_role_where" >
+    
+	</sql>
+  
+  <resultMap type="demo.ssm.pojo.vo.RoleCustom" id="rolereSultMap">  
+      <id column="id" property="id"/>  
+      <result column="text" property="text"/> 
+      <result column="level" property="id"/>  
+      <association property="parent" column="pname" select="selectRoleByPname"></association>
+      <collection property="children" column="text" ofType="demo.ssm.pojo.vo.RoleCustom" 
+      javaType="java.util.ArrayList" select="selectRoleChildren"></collection>            
+  </resultMap>
+  <select id="findRoleTree" resultMap="rolereSultMap">
+  SELECT role.rname as text,role.level as id,role.pname FROM role where pname="";
+  </select>   
+  <select id="selectRoleByPname" parameterType="java.lang.String" resultMap="rolereSultMap">
+  	select * from role where rname=#{pname}
+  </select>
+  <select id="selectRoleChildren" parameterType="java.lang.String" resultMap="rolereSultMap">
+  	select role.rname as text,role.level as id,role.pname from role where pname=#{rname}
+  </select>
+  查询总记录数
+  <select id="findRoleCount" resultType="int">
+  	select count(*) from role;
+  </select>
+  查询所有职位信息
+  <select id="findRoleList" parameterType="demo.ssm.pojo.vo.RoleQueryVo" 
+  resultType="demo.ssm.pojo.vo.RoleCustom">
+  SELECT * FROM role order by level limit ${pageQuery.PageQuery_start},${pageQuery.PageQuery_end};
+  </select>
+  查询顶级职位
+  <select id="findTopRole" resultType="demo.ssm.pojo.vo.RoleCustom">
+  SELECT * FROM role where pname="";
+  </select>
+ </mapper> -->

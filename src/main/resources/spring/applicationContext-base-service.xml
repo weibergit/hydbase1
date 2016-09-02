@@ -15,5 +15,9 @@
 
 <!-- 用户管理 -->
 <bean id="userService" class="hyd.base.service.impl.UserServiceImpl"/>
-
+<!-- 职位管理 -->
+<bean id="roleService" class="hyd.base.service.impl.RoleServiceImpl"/>
+<!-- 部门管理 -->
+<!-- <bean id="departmentServiceImpl" class="hyd.base.service.impl.DepartmentServiceImpl"/>
+ -->
 </beans>

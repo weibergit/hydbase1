@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="hyd.base.dao.mapper.DepartmentMapperCustom" >
+  
+  <!-- 查询总记录数 -->
+  <select id="findDepartmentCount" resultType="int">
+  	select count(*) from org_department;
+  </select> 
+ <!--  查询所有部门 -->
+  <select id="findDepartmentList" parameterType="hyd.base.pojo.vo.DepartmentQueryVo" 
+  resultType="hyd.base.pojo.vo.DepartmentCustom">
+  SELECT * FROM org_department limit ${pageQuery.PageQuery_start},${pageQuery.PageQuery_end};
+  </select>
+  <!-- 根据上级部门查询平级部门
+  <select id="selectDepartmentByPname" parameterType="java.lang.String" 
+  resultType="demo.ssm.pojo.vo.DepartmentCustom">
+  SELECT * FROM department
+  where pname=#{pname} order by code asc;
+  </select>
+  查询所有部门名称和等级
+  <select id="finddnamelevel" resultType="demo.ssm.pojo.vo.DepartmentCustom">
+  SELECT dname,level FROM department order by code asc;
+  </select> -->
+ </mapper>

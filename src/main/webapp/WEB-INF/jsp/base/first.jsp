@@ -68,6 +68,12 @@
 		)
 	}
 	
+
+	//帮助
+	function showhelp(){
+	    window.open('${baseurl}help/help.html','帮助文档'); 
+	}
+	
 	
 </SCRIPT>
 
@@ -82,21 +88,22 @@
 		border="false" split="true" region="north">
 		<SPAN style="padding-right: 20px; float: right;" class="head">
 			欢迎当前用户：${activeUser.username}&nbsp;&nbsp;
+			<A href=javascript:showhelp()>使用帮助</A>
+			&nbsp;&nbsp;
 			<A title='修改密码' ref='modifypwd' href="#" rel='${baseurl}user/updatepwd.action' icon='icon-null' id="modifypwd" >修改密码</A>
 			&nbsp;&nbsp;
 			<A id="loginOut" href=javascript:logout()>退出系统</A>
 
 		</SPAN> <SPAN style="padding-left: 10px; font-size: 16px;"><IMG
 			align="absmiddle" src="images/blocks.gif" width="20" height="20">
-			华远达企业管理系统</SPAN> <SPAN style="padding-left: 15px;" id="News"></SPAN>
+			医药集中采购系统</SPAN> <SPAN style="padding-left: 15px;" id="News"></SPAN>
 	</DIV>
 
 	<DIV style="background: rgb(210, 224, 242); height: 30px;" split="false"
 		region="south">
 
 		<DIV class="footer">
-			<%-- 系统版本号：${version_number}&nbsp;&nbsp;&nbsp;发布日期：${version_date} --%>
-			系统版本号：v 1.0 &nbsp;&nbsp;&nbsp;发布日期：2016-09-22
+			系统版本号：${version_number}&nbsp;&nbsp;&nbsp;发布日期：${version_date}
 		</DIV>
 	</DIV>
 

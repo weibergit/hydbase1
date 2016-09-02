@@ -20,4 +20,11 @@ public class FisrtAction {
 		//model.addAttribute("user", user);
 		return "/base/first";
 	}
+	
+	@RequestMapping("/welcome")
+	public String welcome(Model model) throws Exception{
+		//User user = userService.findUserByUserid(1);
+		//model.addAttribute("user", user);
+		return "/base/welcome";
+	}
 }
